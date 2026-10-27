@@ -27,7 +27,11 @@ fun AppNavigation() {
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(route = GROUPS_ROUTE) {
-                GroupsScreen()
+                GroupsScreen(
+                    onGroupClick = { groupId ->
+                        android.util.Log.d("GroupClick", "Selected group: $groupId")
+                    }
+                )
             }
             composable(route = CAMERA_ROUTE) {
                 CameraScreen()
