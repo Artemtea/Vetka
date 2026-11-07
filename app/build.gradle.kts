@@ -3,6 +3,21 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 }
 
+val clerkPublishableKey = providers.fileContents(
+    rootProject.layout.projectDirectory.file(".env")
+).asText.map { content ->
+    content.lineSequence()
+        .map { it.trim() }
+        .firstOrNull {
+            it.startsWith("CLERK_PUBLISHABLE_KEY=")
+        }
+        ?.substringAfter("=")
+        ?.trim()
+        ?.removeSurrounding("\"")
+        ?.removeSurrounding("'")
+        ?: error("В .env отсутствует CLERK_PUBLISHABLE_KEY")
+}.get()
+
 android {
     namespace = "com.example.vetka"
     compileSdk {
@@ -17,6 +32,12 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField(
+            "String",
+            "CLERK_PUBLISHABLE_KEY",
+            "\"$clerkPublishableKey\""
+        )
     }
 
     buildTypes {
@@ -28,15 +49,17 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
 dependencies {
+    implementation("com.clerk:clerk-android-api:1.4.1")
     implementation("androidx.navigation:navigation-compose:2.10.2")
     implementation("io.coil-kt:coil-compose:2.7.0")
     implementation(platform(libs.androidx.compose.bom))

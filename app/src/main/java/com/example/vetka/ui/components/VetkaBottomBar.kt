@@ -30,7 +30,7 @@ import com.example.vetka.R
 import com.example.vetka.navigation.CAMERA_ROUTE
 
 @Composable
-fun VetkaBottomBar(navController: NavHostController) {
+fun VetkaBottomBar(navController: NavHostController, onCameraClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -96,9 +96,7 @@ fun VetkaBottomBar(navController: NavHostController) {
                 .clip(CircleShape)
                 .background(Color(0xFFFF7080))
                 .clickable {
-                    navController.navigate(CAMERA_ROUTE) {
-                        launchSingleTop = true
-                    }
+                    onCameraClick()
                 },
             contentAlignment = Alignment.Center
         ) {
